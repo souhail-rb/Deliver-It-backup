@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deliver It - Produits</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        if (!localStorage.getItem('user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>Deliver It</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="users.html">
+                            <i class="fas fa-users"></i>
+                            <span>Utilisateurs</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="products.html">
+                            <i class="fas fa-box"></i>
+                            <span>Produits</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="orders.html">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Commandes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="clients.html">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Clients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="deliveries.html">
+                            <i class="fas fa-truck"></i>
+                            <span>Livraisons</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Gestion des Produits</h1>
+                </div>
+                <div class="navbar-right">
+                    <div class="user-info">
+                        <span id="userName">Admin</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Déconnexion
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="content">
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="addNewBtn">
+                        <i class="fas fa-plus"></i>
+                        Ajouter Produit
+                    </button>
+                    <button class="btn btn-secondary" id="exportCsvBtn">
+                        <i class="fas fa-download"></i>
+                        Export CSV
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-card">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Recherche</label>
+                            <input type="text" id="searchInput" placeholder="Rechercher..." class="filter-input">
+                        </div>
+                        <div class="filter-group">
+                            <label>Catégorie</label>
+                            <select id="filterCategory" class="filter-select">
+                                <option value="">Toutes les catégories</option>
+                                <option value="Restaurant">Restaurant</option>
+                                <option value="Supermarché">Supermarché</option>
+                                <option value="Pharmacie">Pharmacie</option>
+                                <option value="Fleuriste">Fleuriste</option>
+                                <option value="Boulangerie">Boulangerie</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Disponibilité</label>
+                            <select id="filterAvailability" class="filter-select">
+                                <option value="">Tous</option>
+                                <option value="Disponible">Disponible</option>
+                                <option value="Rupture">Rupture de stock</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Lignes par page</label>
+                            <select id="rowsPerPage" class="filter-select">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table sortable" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th data-sort="id">ID <i class="fas fa-sort"></i></th>
+                                    <th data-sort="name">Nom <i class="fas fa-sort"></i></th>
+                                    <th data-sort="category">Catégorie <i class="fas fa-sort"></i></th>
+                                    <th data-sort="price">Prix <i class="fas fa-sort"></i></th>
+                                    <th data-sort="stock">Stock <i class="fas fa-sort"></i></th>
+                                    <th data-sort="availability">Disponibilité <i class="fas fa-sort"></i></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Filled by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-info" id="paginationInfo">
+                            Affichage 1-10 sur 0
+                        </div>
+                        <div class="pagination" id="pagination">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Ajouter Produit</h2>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="entityForm" class="modal-form">
+                <input type="hidden" id="entityId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Nom du Produit *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Catégorie *</label>
+                        <select id="category" name="category" required>
+                            <option value="Restaurant">Restaurant</option>
+                            <option value="Supermarché">Supermarché</option>
+                            <option value="Pharmacie">Pharmacie</option>
+                            <option value="Fleuriste">Fleuriste</option>
+                            <option value="Boulangerie">Boulangerie</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Prix (€) *</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock">Stock *</label>
+                        <input type="number" id="stock" name="stock" min="0" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="availability">Disponibilité *</label>
+                        <select id="availability" name="availability" required>
+                            <option value="Disponible">Disponible</option>
+                            <option value="Rupture">Rupture de stock</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="supplier">Fournisseur</label>
+                        <input type="text" id="supplier" name="supplier">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal-overlay" id="viewModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Détails Produit</h2>
+                <button class="modal-close" id="viewModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Filled by JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeViewBtn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModalOverlay">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>Confirmer la suppression</h2>
+                <button class="modal-close" id="deleteModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer ce produit ?</p>
+                <p class="text-danger">Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Annuler</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="js/products.js"></script>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

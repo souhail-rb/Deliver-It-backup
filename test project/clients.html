@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deliver It - Clients</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        if (!localStorage.getItem('user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>Deliver It</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="users.html">
+                            <i class="fas fa-users"></i>
+                            <span>Utilisateurs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="products.html">
+                            <i class="fas fa-box"></i>
+                            <span>Produits</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="orders.html">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Commandes</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="clients.html">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Clients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="deliveries.html">
+                            <i class="fas fa-truck"></i>
+                            <span>Livraisons</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1>Gestion des Clients</h1>
+                </div>
+                <div class="navbar-right">
+                    <div class="user-info">
+                        <span id="userName">Admin</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Déconnexion
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="content">
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="addNewBtn">
+                        <i class="fas fa-plus"></i>
+                        Ajouter Client
+                    </button>
+                    <button class="btn btn-secondary" id="exportCsvBtn">
+                        <i class="fas fa-download"></i>
+                        Export CSV
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-card">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Recherche</label>
+                            <input type="text" id="searchInput" placeholder="Rechercher..." class="filter-input">
+                        </div>
+                        <div class="filter-group">
+                            <label>Ville</label>
+                            <select id="filterCity" class="filter-select">
+                                <option value="">Toutes les villes</option>
+                                <option value="Casablanca">Casablanca</option>
+                                <option value="Rabat">Rabat</option>
+                                <option value="Marrakech">Marrakech</option>
+                                <option value="Fès">Fès</option>
+                                <option value="Tanger">Tanger</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Type</label>
+                            <select id="filterType" class="filter-select">
+                                <option value="">Tous les types</option>
+                                <option value="Particulier">Particulier</option>
+                                <option value="Entreprise">Entreprise</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Lignes par page</label>
+                            <select id="rowsPerPage" class="filter-select">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table sortable" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th data-sort="id">ID <i class="fas fa-sort"></i></th>
+                                    <th data-sort="name">Nom <i class="fas fa-sort"></i></th>
+                                    <th data-sort="email">Email <i class="fas fa-sort"></i></th>
+                                    <th data-sort="phone">Téléphone <i class="fas fa-sort"></i></th>
+                                    <th data-sort="city">Ville <i class="fas fa-sort"></i></th>
+                                    <th data-sort="type">Type <i class="fas fa-sort"></i></th>
+                                    <th data-sort="orders">Commandes <i class="fas fa-sort"></i></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Filled by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-info" id="paginationInfo">
+                            Affichage 1-10 sur 0
+                        </div>
+                        <div class="pagination" id="pagination">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Ajouter Client</h2>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="entityForm" class="modal-form">
+                <input type="hidden" id="entityId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Nom Complet *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Téléphone *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Type *</label>
+                        <select id="type" name="type" required>
+                            <option value="Particulier">Particulier</option>
+                            <option value="Entreprise">Entreprise</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">Ville *</label>
+                        <select id="city" name="city" required>
+                            <option value="Paris">Paris</option>
+                            <option value="Lyon">Lyon</option>
+                            <option value="Marseille">Marseille</option>
+                            <option value="Bordeaux">Bordeaux</option>
+                            <option value="Lille">Lille</option>
+                            <option value="Nice">Nice</option>
+                            <option value="Montpellier">Montpellier</option>
+                            <option value="Casablanca">Casablanca</option>
+                            <option value="Rabat">Rabat</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="orders">Nombre de Commandes</label>
+                        <input type="number" id="orders" name="orders" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Adresse</label>
+                    <textarea id="address" name="address" rows="2"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal-overlay" id="viewModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Détails Client</h2>
+                <button class="modal-close" id="viewModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Filled by JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeViewBtn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModalOverlay">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>Confirmer la suppression</h2>
+                <button class="modal-close" id="deleteModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer ce client ?</p>
+                <p class="text-danger">Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Annuler</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="js/clients.js"></script>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
